@@ -696,6 +696,7 @@ ggplot(Le_Mans, aes(x = Hour, y = Laps, fill = Team)) +
   theme_minimal()
 
 ```
+
 ```{r}
 tyre_distribution_plot <- ggplot(Le_Mans, aes(x = Tyres, fill = Tyres)) +
   geom_bar() +
@@ -706,4 +707,285 @@ tyre_distribution_plot <- ggplot(Le_Mans, aes(x = Tyres, fill = Tyres)) +
   scale_fill_manual(values = c('blue', 'green', 'red'))
 
 print(tyre_distribution_plot)
+```
+
+```{r}
+combined_data <- bind_rows(mutate(first_hour_data, HourCategory = "First Hour"),
+                           mutate(last_hour_data, HourCategory = "Last Hour"))
+
+car_counts <- combined_data|>
+  group_by(Car, Category, HourCategory)|>
+  summarise(NumCars = n(), .groups = 'drop')
+
+ordered_cars <- car_counts|>
+  group_by(Car)|>
+  summarise(TotalCars = sum(NumCars))|>
+  arrange(TotalCars)|>
+  pull(Car)
+
+combined_data$Car <- factor(combined_data$Car, levels = ordered_cars)
+
+color_palette <- c("#1f78b4", "#33a02c")  
+
+ggplot(combined_data, aes(x = Car, fill = Category, alpha = HourCategory)) +
+  geom_bar(position = "identity", stat = "count") +
+  ggtitle("Distribution of Cars Across Categories (First and Last Hour)") +
+  xlab("Car") +
+  ylab("Number of Cars") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = setNames(rep(color_palette, length(unique(combined_data$Category))), unique(combined_data$Category))) +
+  scale_alpha_manual(values = c(0.7, 0.7))
+```
+
+```{r}
+
+# Subset data for the first hour
+first_hour_data <- subset(Le_Mans, Hour == 1)
+last_hour_data <- subset(Le_Mans, Hour == max(Le_Mans$Hour))
+
+# Combine the data with HourCategory labels
+combined_data <- bind_rows(mutate(first_hour_data, HourCategory = "First Hour"),
+                           mutate(last_hour_data, HourCategory = "Last Hour"))
+
+# Calculate car counts
+car_counts <- combined_data %>%
+  group_by(Car, Category, HourCategory) %>%
+  summarise(NumCars = n(), .groups = 'drop')
+
+# Order cars by total count
+ordered_cars <- car_counts %>%
+  group_by(Car) %>%
+  summarise(TotalCars = sum(NumCars)) %>%
+  arrange(TotalCars) %>%
+  pull(Car)
+
+combined_data$Car <- factor(combined_data$Car, levels = ordered_cars)
+
+# Assign colors based on the HourCategory
+color_palette <- c("#1f78b4", "#33a02c")  # First Hour and Last Hour colors
+color_diff <- "red"  # Color for the difference
+
+# Plot the distribution of cars across categories for the first and last hour
+ggplot(combined_data, aes(x = Car, fill = HourCategory)) +
+  geom_bar(position = "dodge", stat = "count") +
+  ggtitle("Distribution of Cars Across Categories (First and Last Hour)") +
+  xlab("Car") +
+  ylab("Number of Cars") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = c(color_palette, color_diff),
+                    breaks = c("First Hour", "Last Hour", "Difference"),
+                    guide = guide_legend(title = "Hour"))  # Legend for the difference color
+
+```
+
+```{r}
+
+# Filter data for the first and last hours
+first_hour_data <- subset(Le_Mans, Hour == 1)
+last_hour_data <- subset(Le_Mans, Hour == 24)
+
+# Combine data for both hours and create a new variable 'HourCategory'
+combined_data <- bind_rows(mutate(first_hour_data, HourCategory = "First Hour"),
+                           mutate(last_hour_data, HourCategory = "Last Hour"))
+
+# Create a summary table of car counts per model and category
+car_counts <- combined_data %>%
+  group_by(Car, Category, HourCategory) %>%
+  summarise(NumCars = n(), .groups = 'drop')  # Use .groups = 'drop' to avoid grouped output
+
+# Arrange car models by the total number of cars in each category in ascending order
+ordered_cars <- car_counts %>%
+  group_by(Car) %>%
+  summarise(TotalCars = sum(NumCars)) %>%
+  arrange(TotalCars) %>%
+  pull(Car)
+
+# Reorder the 'Car' factor based on the order of 'ordered_cars'
+combined_data$Car <- factor(combined_data$Car, levels = ordered_cars)
+
+# Assign colors based on the categories
+color_palette <- c("#1f78b4", "#33a02c")  # Different colors for better visibility
+
+# Plot the distribution of cars with colors for each category, overlap bars
+ggplot(combined_data, aes(x = Car, fill = Category, alpha = HourCategory)) +
+  geom_bar(position = "identity", stat = "count") +
+  ggtitle("Distribution of Cars Across Categories (First and Last Hour)") +
+  xlab("Car") +
+  ylab("Number of Cars") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = setNames(rep(color_palette, length(unique(combined_data$Category))), unique(combined_data$Category))) +
+  scale_alpha_manual(values = c(0.7, 0.7))  # Adjust alpha values for transparency
+
+```
+
+```{r}
+# Filter data for the first and last hours
+first_hour_data <- subset(Le_Mans, Hour == 1)
+last_hour_data <- subset(Le_Mans, Hour == 24)
+
+# Combine data for both hours and create a new variable 'HourCategory'
+combined_data <- bind_rows(mutate(first_hour_data, HourCategory = "First Hour"),
+                           mutate(last_hour_data, HourCategory = "Last Hour"))
+
+# Create a summary table of car counts per model and category
+car_counts <- combined_data %>%
+  group_by(Car, Category, HourCategory) %>%
+  summarise(NumCars = n(), .groups = 'drop')  # Use .groups = 'drop' to avoid grouped output
+
+# Arrange car models by the total number of cars in each category in ascending order
+ordered_cars <- car_counts %>%
+  group_by(Car) %>%
+  summarise(TotalCars = sum(NumCars)) %>%
+  arrange(TotalCars) %>%
+  pull(Car)
+
+# Reorder the 'Car' factor based on the order of 'ordered_cars'
+combined_data$Car <- factor(combined_data$Car, levels = ordered_cars)
+
+# Assign colors based on the categories
+color_palette <- c("#1f78b4", "#33a02c")  # Different colors for better visibility
+
+# Plot the distribution of cars with colors for each category, overlap bars
+ggplot(combined_data, aes(x = Car, fill = Category, alpha = HourCategory)) +
+  geom_bar(position = "identity", stat = "count", color = "black") +
+  ggtitle("Distribution of Cars Across Categories (First and Last Hour)") +
+  xlab("Car") +
+  ylab("Number of Cars") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = setNames(rep(color_palette, length(unique(combined_data$Category))), unique(combined_data$Category))) +
+  scale_alpha_manual(values = c(0.7, 0.7)) +  # Adjust alpha values for transparency
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = category_colors) + guides(fill = "none")
+
+```
+
+```{r}
+category_counts_first_hour <- first_hour_data|>
+  group_by(Category)|>
+  summarise(NumCars = n())
+
+ordered_categories_first_hour <- category_counts_first_hour|>
+  arrange(NumCars)|>
+  pull(Category)
+
+# Reorder the 'Category' factor based on the order of 'ordered_categories_first_hour'
+first_hour_data$Category <- factor(first_hour_data$Category, levels = ordered_categories_first_hour)
+
+# Create a named vector of colors for each category
+category_colors <- setNames(brewer.pal(length(ordered_categories_first_hour), "Set3"), ordered_categories_first_hour)
+
+# Plot the distribution of cars across categories for the first hour
+plot_first_hour <- ggplot(first_hour_data, aes(x = Category, fill = Category)) +
+  geom_bar() +
+  ggtitle("Distribution of Car Categories (First Hour)") +
+  xlab("Car Category") +
+  ylab("Number of Cars") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = category_colors) + guides(fill = "none")
+
+# Filter data for the last hour
+last_hour_data <- subset(Le_Mans, Hour == max(Le_Mans$Hour))
+
+# Create a summary table of car counts per category
+category_counts_last_hour <- last_hour_data |>
+  group_by(Category) |>
+  summarise(NumCars = n())
+
+# Order categories by the number of cars in ascending order
+ordered_categories_last_hour <- category_counts_last_hour |>
+  arrange(NumCars) |>
+  pull(Category)
+
+# Reorder the 'Category' factor based on the order of 'ordered_categories_last_hour'
+last_hour_data$Category <- factor(last_hour_data$Category, levels = ordered_categories_last_hour)
+
+# ... (previous code)
+
+# Plot the distribution of cars across categories for the first hour
+plot_first_hour <- ggplot(first_hour_data, aes(x = Category, fill = Category)) +
+  geom_bar() +
+  ggtitle("Distribution of Car Categories (First Hour)") +
+  xlab("Car Category") +
+  ylab("Number of Cars") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = category_colors) + guides(fill = "none")
+
+print(plot_first_hour)  # Print the first plot
+
+# ... (similar code for the last hour)
+
+# Arrange the plots in a grid
+grid.arrange(plot_first_hour, plot_last_hour, ncol = 2)
+  
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+
+# Assuming your dataset is named 'Le_Mans' and has columns 'Hour', 'Car'
+
+# Subset data for the first hour and the specified cars
+selected_cars <- c("Toyota", "Ferrari", "Porsche", "Cadillac")
+first_hour_selected_cars <- Le_Mans %>%
+  filter(Hour == 1, Car %in% selected_cars)
+
+# Create a pie chart for the distribution of selected cars in the first hour
+ggplot(first_hour_selected_cars, aes(x = "", fill = Car)) +
+  geom_bar(stat = "count", width = 1) +
+  coord_polar(theta = "y") +
+  labs(title = "Distribution of Toyota, Ferrari, Porsche, and Cadillac Cars in the First Hour",
+       fill = "Car") +
+  theme_minimal()
+
+
+```
+
+```{r}
+porsche_first_hour_count <- Le_Mans %>%
+  filter(Hour == 1, grepl("Porsche", Car, ignore.case = TRUE)) %>%
+  summarise(Count = n())
+
+print(porsche_first_hour_count)
+
+```
+
+```{r}
+chart_first_hour_count <- Le_Mans %>%
+  filter(Hour == 1, grepl("Porsche|Toyota|Cadillac|Ferrari", Car, ignore.case = TRUE))|>
+  summarise(Count = n())
+
+# Print the result
+print(chart_first_hour_count)
+
+```
+
+
+```{r}
+# Load necessary libraries
+library(tidyverse)
+
+# Assuming your data is stored in a dataframe called 'Le_Mans'
+# Replace 'Le_Mans' with the actual name of your dataframe if it's different
+
+# Extract relevant columns for analysis
+car_counts <- Le_Mans %>%
+  group_by(Car) %>%
+  summarise(Count = n())
+
+# Define categories of interest
+categories_of_interest <- c("Toyota GR010 HYBRID", "Ferrari 499P", "Porsche 963")
+
+# Create a new column for categorization
+car_counts <- car_counts %>%
+  mutate(Category = ifelse(Car %in% categories_of_interest, as.character(Car), "Other"))
+
+# Plot pie chart using ggplot2
+ggplot(car_counts, aes(x = "", y = Count, fill = Category)) +
+  geom_bar(width = 1, stat = "identity") +
+  coord_polar("y", start = 0) +
+  theme_void() +
+  ggtitle("Car Distribution in the First Hour") +
+  scale_fill_manual(values = c("Toyota GR010 HYBRID" = "blue", "Ferrari 499P" = "red", "Porsche 963" = "green", "Other" = "gray"))
+
 ```
