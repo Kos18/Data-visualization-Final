@@ -1106,5 +1106,17 @@ plot_last_hour <- ggplot(filter(combined_data, HourCategory == "Last Hour"), aes
 plot_first_hour + plot_last_hour
 
 ```
+```{r}
+ggplot(Le_Mans, aes(x = reorder(Team, Laps), y = Laps, fill = Team)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Bar Chart of Laps by Team", x = "Team", y = "Laps") +
+  theme(
+    axis.text.x = element_text(angle = 70, hjust = 1),
+    legend.position = "right",  # Position of the legend
+    legend.text = element_text(size = 6),  # Adjust the legend text size
+    plot.title = element_text(size = 16, face = "bold"),  # Adjust the plot title size
+    axis.title = element_text(size = 10, face = "bold")
+  )
+```
 
 
