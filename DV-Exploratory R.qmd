@@ -1056,5 +1056,55 @@ ggplot(team_car_data, aes(x = Metric, y = Count, fill = Hour)) +
 
 ```
 
+```{r}
+library(ggplot2)
+library(dplyr)
+
+# Combine the data with HourCategory labels
+combined_data <- bind_rows(mutate(first_hour_data, HourCategory = "First Hour"),
+                           mutate(last_hour_data, HourCategory = "Last Hour"))
+
+# Calculate car counts
+car_counts <- combined_data %>%
+  group_by(Car, Category, HourCategory) %>%
+  summarise(NumCars = n(), .groups = 'drop')
+
+# Order cars by total count
+ordered_cars <- car_counts %>%
+  group_by(Car) %>%
+  summarise(TotalCars = sum(NumCars)) %>%
+  arrange(TotalCars) %>%
+  pull(Car)
+
+combined_data$Car <- factor(combined_data$Car, levels = ordered_cars)
+
+# Assign colors based on the HourCategory
+color_palette <- c("#ff8080", "#C4B454", "#66c2a5", "#1f78b4", "#ff4d4d") 
+
+
+# Plot the distribution of cars across categories for the first hour
+plot_first_hour <- ggplot(filter(combined_data, HourCategory == "First Hour"), aes(x = Car, fill = Category)) +
+  geom_bar(position = "dodge", stat = "count", size = 1.5, color = "black") +
+  geom_text(stat = "count", aes(label = ..count..), position = position_dodge(width = 0.9), vjust = -0.5) +
+  ggtitle("Distribution of Cars Across Categories (First Hour)") +
+  xlab("Car") +
+  ylab("Number of Cars") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = color_palette)
+
+# Plot the distribution of cars across categories for the last hour with thick borders
+plot_last_hour <- ggplot(filter(combined_data, HourCategory == "Last Hour"), aes(x = Car, fill = Category)) +
+  geom_bar(position = "dodge", stat = "count", size = 1.5, color = "black") +
+  geom_text(stat = "count", aes(label = ..count..), position = position_dodge(width = 0.9), vjust = -0.5) +
+  ggtitle("Distribution of Cars Across Categories (Last Hour)") +
+  xlab("Car") +
+  ylab("Number of Cars") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = color_palette)
+
+# Display the plots
+plot_first_hour + plot_last_hour
+
+```
 
 
