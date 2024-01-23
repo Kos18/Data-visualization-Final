@@ -989,3 +989,72 @@ ggplot(car_counts, aes(x = "", y = Count, fill = Category)) +
   scale_fill_manual(values = c("Toyota GR010 HYBRID" = "blue", "Ferrari 499P" = "red", "Porsche 963" = "green", "Other" = "gray"))
 
 ```
+
+```{r}
+# We create a data frame for teams and cars
+team_car_data <- data.frame(
+  Metric = c("Teams (First Hour)", "Cars (First Hour)", "Teams (Last Hour)", "Cars (Last Hour)"),
+  Count = c(teams_first_hour, cars_first_hour, teams_last_hour, cars_last_hour),
+  Hour = c("First Hour", "Last Hour", "First Hour", "Last Hour")
+)
+
+colors <- c("#66c2a5", "#fc8d62", "#66c2a5", "#fc8d62")
+#colors <- c("#1f78b4", "#33a02c", "#e31a1c", "#ff7f00")
+
+# Plot bar chart
+ggplot(team_car_data, aes(x = Metric, y = Count, fill = Hour)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  ggtitle("Number of Teams and Cars in the First and Last Hours") +
+  xlab("") +
+  ylab("Count") +
+  scale_fill_manual(values = colors) +
+  theme_minimal()
+```
+```{r}
+# We create a data frame for teams and cars
+team_car_data <- data.frame(
+  Metric = c("Teams (First Hour)", "Cars (First Hour)", "Teams (Last Hour)", "Cars (Last Hour)"),
+  Count = c(teams_first_hour, cars_first_hour, teams_last_hour, cars_last_hour),
+  Hour = c("First Hour", "First Hour", "Last Hour", "Last Hour")
+)
+
+# Combine Teams and Cars for each hour
+team_car_data$Metric <- factor(team_car_data$Metric, levels = c("Teams (First Hour)", "Cars (First Hour)", "Teams (Last Hour)", "Cars (Last Hour)"))
+
+colors <- c("#66c2a5", "#fc8d62", "#66c2a5", "#fc8d62")
+
+# Plot bar chart
+ggplot(team_car_data, aes(x = Metric, y = Count, fill = Hour)) +
+  geom_bar(stat = "identity", position = "stack") +
+  ggtitle("Number of Teams and Cars in the First and Last Hours") +
+  xlab("") +
+  ylab("Count") +
+  scale_fill_manual(values = colors) +
+  theme_minimal()
+```
+```{r}
+# We create a data frame for teams and cars
+team_car_data <- data.frame(
+  Metric = c("Teams", "Teams", "Cars", "Cars"),
+  Hour = c("First Hour", "Last Hour", "First Hour", "Last Hour"),
+  Count = c(teams_first_hour, teams_last_hour, cars_first_hour, cars_last_hour)
+)
+
+# Reorder the levels of Metric to arrange the bars as desired
+team_car_data$Metric <- factor(team_car_data$Metric, levels = c("Teams", "Cars"))
+
+colors <- c("#66c2a5", "#1f78b4")
+
+# Plot bar chart
+ggplot(team_car_data, aes(x = Metric, y = Count, fill = Hour)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  ggtitle("Number of Teams and Cars in the First and Last Hours") +
+  xlab("") +
+  ylab("Count") +
+  scale_fill_manual(values = colors) +
+  theme_minimal()
+
+```
+
+
+
