@@ -4,6 +4,12 @@ author: "Costin-Andrei Taulescu"
 format: revealjs
 editor: visual
 ---
+```{r}
+# Reference to the data set: https://www.kaggle.com/datasets/antimoni/24-hours-of-le-mans-2023
+# Download the data set: https://www.kaggle.com/datasets/antimoni/24-hours-of-le-mans-2023/download?datasetVersionNumber=1
+# Please create a folder named "Data" and proceed to load the CSV file into that directory.
+```
+
 
 ```{r} 
 # We will load the libraries
@@ -16,7 +22,7 @@ library(gridExtra)
 
 ```{r}
 # We will import the database csv
-Le_Mans <- read.csv('C:/Users/costi/Desktop/Data visualization/Hour By Hour Race Analysis.csv')
+Le_Mans <- read.csv('Data/Hour By Hour Race Analysis.csv')
 #head(Le_Mans)
 mutate(Le_Mans,Car= str_replace(Car, 'HYPERCAR ', 'HYPERCAR'))
 ```

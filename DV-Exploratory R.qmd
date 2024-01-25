@@ -5,6 +5,13 @@ server: shiny
 ---
 
 ```{r}
+# Reference to the data set: https://www.kaggle.com/datasets/antimoni/24-hours-of-le-mans-2023
+# Download the data set: https://www.kaggle.com/datasets/antimoni/24-hours-of-le-mans-2023/download?datasetVersionNumber=1
+# Please create a folder named "Data" and proceed to load the CSV file into that directory.
+```
+
+
+```{r}
 library(readxl)
 library(dplyr)
 library(ggplot2)
@@ -15,7 +22,7 @@ library(RColorBrewer)
 ```
 
 ```{r}
-Le_Mans <- read.csv('C:/Users/costi/Desktop/Data visualization/Hour By Hour Race Analysis.csv')
+Le_Mans <- read.csv('Data/Hour By Hour Race Analysis.csv')
 head(Le_Mans)
 ```
 
